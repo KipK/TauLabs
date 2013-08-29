@@ -562,7 +562,9 @@ void PIOS_Board_Init(void) {
  #endif	/* PIOS_INCLUDE_MAVLINK */   	
 		break;
 		case HWREVOMINI_MAINPORT_LIGHTTELEMETRY:
+#if defined(PIOS_INCLUDE_LIGHTTELEMETRY)
 		PIOS_Board_configure_com(&pios_usart_main_cfg, 0, PIOS_COM_LIGHTTELEMETRY_TX_BUF_LEN, &pios_usart_com_driver, &pios_com_lighttelemetry_id);
+#endif
 		break;
 		
 	} /* 	hw_mainport */
@@ -639,7 +641,9 @@ void PIOS_Board_Init(void) {
 #endif    	/* PIOS_INCLUDE_MAVLINK */
 		break;
 		case HWREVOMINI_FLEXIPORT_LIGHTTELEMETRY:
+#if defined(PIOS_INCLUDE_LIGHTTELEMETRY)
 		PIOS_Board_configure_com(&pios_usart_main_cfg, 0, PIOS_COM_LIGHTTELEMETRY_TX_BUF_LEN, &pios_usart_com_driver, &pios_com_lighttelemetry_id);
+#endif  
 		break;
 	} /* hwsettings_rv_flexiport */
 

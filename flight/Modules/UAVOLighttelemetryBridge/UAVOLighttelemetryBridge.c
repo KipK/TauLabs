@@ -179,7 +179,7 @@ void SendData(int32_t Lat,int32_t Lon,uint16_t Speed,int32_t Alt,int8_t Sats, in
 	LTBuff[18]=LTCrc;
 	outputPort = telemetryPort;
 	if (outputPort) {
-		PIOS_COM_SendBuffer(outputPort, LTBuff, 20);
+		PIOS_COM_SendBuffer(outputPort, LTBuff, 19);
 	}
 }
 

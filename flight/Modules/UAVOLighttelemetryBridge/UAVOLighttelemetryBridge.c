@@ -10,7 +10,7 @@
  * @brief      Bridges selected UAVObjects to a minimal one way telemetry 
  *			   protocol for really low bitrates (<1000 bits/s). This can be 
  *			   used with FSK audio modems or increase range for serial telemetry.
- *			   Usefull for ground osd & antenna tracker.
+ *			   Useful for ground osd & antenna tracker with long range.
  * @see        The GNU Public License (GPL) Version 3
  *
  *****************************************************************************/
@@ -29,7 +29,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 
 #include "openpilot.h"
 #include "modulesettings.h"
@@ -79,18 +78,19 @@ int32_t uavoLighttelemetryBridgeInitialize()
 
 	return 0;
 }
-MODULE_INITCALL(uavoLighttelemetryBridgeInitialize, uavoLighttelemetryBridgeStart)
+MODULE_INITCALL(uavoLighttelemetryBridgeInitialize, uavoLighttelemetryBridgeStart);
+
 /**
  * Module thread, should not return.
  */
 static void uavoLighttelemetryBridgeTask(void *parameters)
 {
-    uint32_t glat = 0;
-	uint32_t glon = 0;
-	uint16_t gspeed = 0;
-	uint32_t galt = 0;
-	uint8_t gfix = 0;
-	uint8_t gsats = 0;
+	uint32_t lt_latitude = 0;
+	uint32_t lt_longitude = 0;
+	uint16_t lt_groundspeed = 0;
+	uint32_t lt_altitude = 0;
+	uint8_t lt_gpsfix = 0;
+	uint8_t lt_gpssats = 0;
 	portTickType lastSysTime;
 	GPSPositionData pdata;
 	BaroAltitudeData bdata;
@@ -103,40 +103,37 @@ static void uavoLighttelemetryBridgeTask(void *parameters)
 	{
 		GPSPositionGet(&pdata);
 
-		glat=pdata.Latitude;
-		glon=pdata.Longitude;
-		gspeed = (int16_t)round(pdata.Groundspeed); //rounded m/s max 951km/h should be ok.
+		lt_latitude=pdata.Latitude;
+		lt_longitude=pdata.Longitude;
+		lt_groundspeed = (int16_t)round(pdata.Groundspeed); //rounded m/s max 951km/h should be ok.
 
 		if (BaroAltitudeHandle() != NULL) {
 			BaroAltitudeGet(&bdata);
-			galt = (int32_t)round(bdata.Altitude * 100); //Baro alt in cm.
-			}
-		else if (GPSPositionHandle() != NULL)
-			galt = (int32_t)round(pdata.Altitude * 100); //GPS alt in cm.
+			lt_altitude = (int32_t)round(bdata.Altitude * 100); //Baro alt in cm.
+		}
+		else if (GPSPositionHandle() != NULL) lt_altitude = (int32_t)round(pdata.Altitude * 100); //GPS alt in cm.
 		
-
-		switch (pdata.Status)
-			{
+		switch (pdata.Status) {
 			case GPSPOSITION_STATUS_NOGPS:
-				gfix = 0;
+				lt_gpsfix = 0;
 				break;
 			case GPSPOSITION_STATUS_NOFIX:
-				gfix = 1;
+				lt_gpsfix = 1;
 				break;
 			case GPSPOSITION_STATUS_FIX2D:
-				gfix = 2;
+				lt_gpsfix = 2;
 				break;
 			case GPSPOSITION_STATUS_FIX3D:
-				gfix = 3;
+				lt_gpsfix = 3;
 				break;
 			default:
-				gfix = 0;
+				lt_gpsfix = 0;
 				break;
 		}
 		
-		gsats = pdata.Satellites;
+		lt_gpssats = pdata.Satellites;
 			
-		SendData(glat,glon,gspeed,galt,gsats,gfix);
+		SendData(lt_latitude,lt_longitude,lt_groundspeed,lt_altitude,lt_gpssats,lt_gpsfix);
 		// Delay until it is time to read the next sample
 		vTaskDelayUntil(&lastSysTime, UPDATE_PERIOD / portTICK_RATE_MS);
 	}

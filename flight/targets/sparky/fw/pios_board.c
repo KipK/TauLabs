@@ -172,6 +172,7 @@ uintptr_t pios_rcvr_group_map[MANUALCONTROLSETTINGS_CHANNELGROUPS_NONE];
 #define PIOS_COM_BRIDGE_TX_BUF_LEN 12
 
 #define PIOS_COM_MAVLINK_TX_BUF_LEN 32
+#define PIOS_COM_LIGHTTELEMETRY_TX_BUF_LEN 19 
 
 #if defined(PIOS_INCLUDE_DEBUG_CONSOLE)
 #define PIOS_COM_DEBUGCONSOLE_TX_BUF_LEN 40
@@ -185,6 +186,7 @@ uintptr_t pios_com_telem_rf_id;
 uintptr_t pios_com_vcp_id;
 uintptr_t pios_com_bridge_id;
 uintptr_t pios_com_mavlink_id;
+uintptr_t pios_com_lighttelemetry_id; 
 uintptr_t pios_com_can_id;
 
 uintptr_t pios_uavo_settings_fs_id;
@@ -644,6 +646,11 @@ void PIOS_Board_Init(void) {
 #endif  /* PIOS_INCLUDE_MAVLINK */
 #endif  /* PIOS_INCLUDE_GPS */
 		break;
+	case HWSPARKY_FLEXIPORT_LIGHTTELEMETRY:
+#if defined(PIOS_INCLUDE_LIGHTTELEMETRY)
+	PIOS_Board_configure_com(&pios_flexi_usart_cfg, 0, PIOS_COM_LIGHTTELEMETRY_TX_BUF_LEN, &pios_usart_com_driver, &pios_com_lighttelemetry_id);
+#endif
+    break;     
 	}
 
 	/* UART3 Port */
@@ -729,6 +736,11 @@ void PIOS_Board_Init(void) {
 #endif  /* PIOS_INCLUDE_MAVLINK */
 #endif  /* PIOS_INCLUDE_GPS */
 		break;
+	case HWSPARKY_MAINPORT_LIGHTTELEMETRY:
+#if defined(PIOS_INCLUDE_LIGHTTELEMETRY)
+	PIOS_Board_configure_com(&pios_main_usart_cfg, 0, PIOS_COM_LIGHTTELEMETRY_TX_BUF_LEN, &pios_usart_com_driver, &pios_com_lighttelemetry_id);
+#endif
+    break;  
 	}
 
 	/* Configure the rcvr port */

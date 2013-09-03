@@ -36,7 +36,7 @@
 #include "baroaltitude.h"
 
 // Private constants
-#define STACK_SIZE_BYTES 2000 // too optimize later.
+#define STACK_SIZE_BYTES 512
 #define TASK_PRIORITY (tskIDLE_PRIORITY+1)
 #define UPDATE_PERIOD 200
 
@@ -74,7 +74,7 @@ int32_t uavoLighttelemetryBridgeInitialize()
 
 	// Update telemetry settings
 	telemetryPort = PIOS_COM_LIGHTTELEMETRY;
-	PIOS_COM_ChangeBaud(telemetryPort, 1200);
+	PIOS_COM_ChangeBaud(telemetryPort, 19200);
 
 	return 0;
 }
@@ -85,10 +85,10 @@ MODULE_INITCALL(uavoLighttelemetryBridgeInitialize, uavoLighttelemetryBridgeStar
  */
 static void uavoLighttelemetryBridgeTask(void *parameters)
 {
-	uint32_t lt_latitude = 0;
-	uint32_t lt_longitude = 0;
-	uint16_t lt_groundspeed = 0;
-	uint32_t lt_altitude = 0;
+	int32_t lt_latitude = 0;
+	int32_t lt_longitude = 0;
+    uint16_t lt_groundspeed = 0;
+	int32_t lt_altitude = 0;
 	uint8_t lt_gpsfix = 0;
 	uint8_t lt_gpssats = 0;
 	portTickType lastSysTime;

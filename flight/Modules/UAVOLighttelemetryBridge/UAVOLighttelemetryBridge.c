@@ -49,7 +49,7 @@ static uint32_t telemetryPort;
 
 // Private functions
 static void uavoLighttelemetryBridgeTask(void *parameters);
-
+static void updateSettings();
 
 void SendData(int32_t Lat,int32_t Lon,uint16_t Speed,int32_t Alt,int8_t Sats, int8_t Fix);
 
@@ -74,7 +74,8 @@ int32_t uavoLighttelemetryBridgeInitialize()
 
 	// Update telemetry settings
 	telemetryPort = PIOS_COM_LIGHTTELEMETRY;
-	PIOS_COM_ChangeBaud(telemetryPort, 19200);
+	updateSettings();
+	//PIOS_COM_ChangeBaud(telemetryPort, 19200);
 
 	return 0;
 }
@@ -180,6 +181,51 @@ void SendData(int32_t Lat,int32_t Lon,uint16_t Speed,int32_t Alt,int8_t Sats, in
 	outputPort = telemetryPort;
 	if (outputPort) {
 		PIOS_COM_SendBuffer(outputPort, LTBuff, 19);
+	}
+}
+
+/**
+ * Update the telemetry settings, called on startup.
+ * FIXME: This should be in the TelemetrySettings object. But objects
+ * have too much overhead yet. Also the telemetry has no any specific
+ * settings, etc. Thus the ModuleSettings object which contains the
+ * telemetry port speed is used for now.
+ */
+static void updateSettings()
+{
+	
+	if (telemetryPort) {
+		// Retrieve settings
+		uint8_t speed;
+		ModuleSettingsLightTelemetrySpeedGet(&speed);
+
+		// Set port speed
+		switch (speed) {
+		case MODULESETTINGS_LIGHTTELEMETRYSPEED_1200:
+			PIOS_COM_ChangeBaud(telemetryPort, 1200);
+			break;
+		case MODULESETTINGS_LIGHTTELEMETRYSPEED_2400:
+			PIOS_COM_ChangeBaud(telemetryPort, 2400);
+			break;
+		case MODULESETTINGS_LIGHTTELEMETRYSPEED_4800:
+			PIOS_COM_ChangeBaud(telemetryPort, 4800);
+			break;
+		case MODULESETTINGS_LIGHTTELEMETRYSPEED_9600:
+			PIOS_COM_ChangeBaud(telemetryPort, 9600);
+			break;
+		case MODULESETTINGS_LIGHTTELEMETRYSPEED_19200:
+			PIOS_COM_ChangeBaud(telemetryPort, 19200);
+			break;
+		case MODULESETTINGS_LIGHTTELEMETRYSPEED_38400:
+			PIOS_COM_ChangeBaud(telemetryPort, 38400);
+			break;
+		case MODULESETTINGS_LIGHTTELEMETRYSPEED_57600:
+			PIOS_COM_ChangeBaud(telemetryPort, 57600);
+			break;
+		case MODULESETTINGS_LIGHTTELEMETRYSPEED_115200:
+			PIOS_COM_ChangeBaud(telemetryPort, 115200);
+			break;
+		}
 	}
 }
 

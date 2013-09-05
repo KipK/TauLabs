@@ -28,7 +28,8 @@
 				<option>DSMX (11bit)</option>
 				<option>MavLinkTX</option>
 				<option>MavLinkTX_GPS_RX</option>
-				<option>Lighttelemetry</option> 
+				<option>LighttelemetryTx</option>
+				<option>LighttelemetryTx_GPS_RX</option> 
 			</options>
 		</field>
 
@@ -45,7 +46,8 @@
 				<option>DSMX (11bit)</option>
 				<option>MavLinkTX</option>
 				<option>MavLinkTX_GPS_RX</option>
-				<option>Lighttelemetry</option> 
+				<option>LighttelemetryTx</option>
+				<option>LighttelemetryTx_GPS_RX</option> 
 			</options>
 		</field>
 

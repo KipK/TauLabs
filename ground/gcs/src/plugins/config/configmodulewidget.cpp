@@ -74,7 +74,8 @@ ConfigModuleWidget::ConfigModuleWidget(QWidget *parent) : ConfigTaskWidget(paren
     addUAVObjectToWidgetRelation(moduleSettingsName, "AdminState", ui->cbVibrationAnalysis, ModuleSettings::ADMINSTATE_VIBRATIONANALYSIS);
     addUAVObjectToWidgetRelation(moduleSettingsName, "AdminState", ui->cbVtolFollower, ModuleSettings::ADMINSTATE_VTOLPATHFOLLOWER);
     addUAVObjectToWidgetRelation(moduleSettingsName, "AdminState", ui->cbPathPlanner, ModuleSettings::ADMINSTATE_PATHPLANNER);
-
+	addUAVObjectToWidgetRelation(moduleSettingsName, "AdminState", ui->cbUAVOLighttelemetryBridge, ModuleSettings::ADMINSTATE_UAVOLIGHTTELEMETRYBRIDGE);
+	addUAVObjectToWidgetRelation(moduleSettingsName, "AdminState", ui->cbUAVOMavlinkBridge, ModuleSettings::ADMINSTATE_UAVOMAVLINKBRIDGE);
     addUAVObjectToWidgetRelation(batterySettingsName, "SensorType", ui->gb_measureVoltage, FlightBatterySettings::SENSORTYPE_BATTERYVOLTAGE);
     addUAVObjectToWidgetRelation(batterySettingsName, "SensorType", ui->gb_measureCurrent, FlightBatterySettings::SENSORTYPE_BATTERYCURRENT);
 

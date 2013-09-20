@@ -45,7 +45,7 @@
 // Private variables
 static xTaskHandle taskHandle;
 
-static uint32_t telemetryPort;
+static uint32_t lighttelemetryPort;
 
 // Private functions
 static void uavoLighttelemetryBridgeTask(void *parameters);
@@ -73,9 +73,8 @@ int32_t uavoLighttelemetryBridgeInitialize()
 {
 
 	// Update telemetry settings
-	telemetryPort = PIOS_COM_LIGHTTELEMETRY;
+	lighttelemetryPort = PIOS_COM_LIGHTTELEMETRY;
 	updateSettings();
-	//PIOS_COM_ChangeBaud(telemetryPort, 19200);
 
 	return 0;
 }
@@ -178,7 +177,7 @@ void SendData(int32_t Lat,int32_t Lon,uint16_t Speed,int32_t Alt,int8_t Sats, in
           LTCrc ^= LTBuff[i];
     }
 	LTBuff[18]=LTCrc;
-	outputPort = telemetryPort;
+	outputPort = lighttelemetryPort;
 	if (outputPort) {
 		PIOS_COM_SendBuffer(outputPort, LTBuff, 19);
 	}
@@ -194,7 +193,7 @@ void SendData(int32_t Lat,int32_t Lon,uint16_t Speed,int32_t Alt,int8_t Sats, in
 static void updateSettings()
 {
 	
-	if (telemetryPort) {
+	if (lighttelemetryPort) {
 		// Retrieve settings
 		uint8_t speed;
 		ModuleSettingsLightTelemetrySpeedGet(&speed);
@@ -202,28 +201,28 @@ static void updateSettings()
 		// Set port speed
 		switch (speed) {
 		case MODULESETTINGS_LIGHTTELEMETRYSPEED_1200:
-			PIOS_COM_ChangeBaud(telemetryPort, 1200);
+			PIOS_COM_ChangeBaud(lighttelemetryPort, 1200);
 			break;
 		case MODULESETTINGS_LIGHTTELEMETRYSPEED_2400:
-			PIOS_COM_ChangeBaud(telemetryPort, 2400);
+			PIOS_COM_ChangeBaud(lighttelemetryPort, 2400);
 			break;
 		case MODULESETTINGS_LIGHTTELEMETRYSPEED_4800:
-			PIOS_COM_ChangeBaud(telemetryPort, 4800);
+			PIOS_COM_ChangeBaud(lighttelemetryPort, 4800);
 			break;
 		case MODULESETTINGS_LIGHTTELEMETRYSPEED_9600:
-			PIOS_COM_ChangeBaud(telemetryPort, 9600);
+			PIOS_COM_ChangeBaud(lighttelemetryPort, 9600);
 			break;
 		case MODULESETTINGS_LIGHTTELEMETRYSPEED_19200:
-			PIOS_COM_ChangeBaud(telemetryPort, 19200);
+			PIOS_COM_ChangeBaud(lighttelemetryPort, 19200);
 			break;
 		case MODULESETTINGS_LIGHTTELEMETRYSPEED_38400:
-			PIOS_COM_ChangeBaud(telemetryPort, 38400);
+			PIOS_COM_ChangeBaud(lighttelemetryPort, 38400);
 			break;
 		case MODULESETTINGS_LIGHTTELEMETRYSPEED_57600:
-			PIOS_COM_ChangeBaud(telemetryPort, 57600);
+			PIOS_COM_ChangeBaud(lighttelemetryPort, 57600);
 			break;
 		case MODULESETTINGS_LIGHTTELEMETRYSPEED_115200:
-			PIOS_COM_ChangeBaud(telemetryPort, 115200);
+			PIOS_COM_ChangeBaud(lighttelemetryPort, 115200);
 			break;
 		}
 	}

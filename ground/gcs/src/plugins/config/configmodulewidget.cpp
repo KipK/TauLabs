@@ -128,6 +128,12 @@ ConfigModuleWidget::ConfigModuleWidget(QWidget *parent) : ConfigTaskWidget(paren
     ui->cbPathPlanner->setProperty(trueString.toAscii(), "Enabled");
     ui->cbPathPlanner->setProperty(falseString.toAscii(), "Disabled");
 
+    ui->cbUAVOMavlinkBridge->setProperty(trueString.toAscii(), "Enabled");
+    ui->cbUAVOMavlinkBridge->setProperty(falseString.toAscii(), "Disabled");	
+
+    ui->cbUAVOLighttelemetryBridge->setProperty(trueString.toAscii(), "Enabled");
+    ui->cbUAVOLighttelemetryBridge->setProperty(falseString.toAscii(), "Disabled");	
+
     ui->gb_measureVoltage->setProperty(trueString.toAscii(), "Enabled");
     ui->gb_measureVoltage->setProperty(falseString.toAscii(), "Disabled");
 

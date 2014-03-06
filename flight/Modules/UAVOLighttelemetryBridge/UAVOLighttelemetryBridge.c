@@ -130,19 +130,14 @@ static void uavoLighttelemetryBridgeTask(void *parameters)
 
         if (ltm_scheduler & 1) {    // is odd
             send_LTM_Aframe();
-            if (ltm_slowrate==0) send_LTM_Sframe();
         }
         else                        // is even
         {
             if (ltm_slowrate == 0) {
                 send_LTM_Aframe();               
-                send_LTM_Gframe();
             }
-            else
-            {
-                if (ltm_scheduler % 4 == 0)   send_LTM_Sframe();
-                else send_LTM_Gframe();
-            }
+            if (ltm_scheduler % 4 == 0)   send_LTM_Sframe();
+            else send_LTM_Gframe();
         }
         ltm_scheduler++;
         if (ltm_scheduler > 10) ltm_scheduler = 1;

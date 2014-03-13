@@ -102,7 +102,7 @@ int32_t uavoLighttelemetryBridgeInitialize()
 {
 	// Update telemetry settings
 	lighttelemetryPort = PIOS_COM_LIGHTTELEMETRY;
-	ltm_scheduler=1;
+	ltm_scheduler = 1;
 	updateSettings();
 	uint8_t speed;
 	ModuleSettingsLightTelemetrySpeedGet(&speed);
@@ -164,16 +164,16 @@ static void send_LTM_Gframe()
 	 //prepare data
 	GPSPositionGet(&pdata);
 
-	int32_t lt_latitude=pdata.Latitude;
-	int32_t lt_longitude=pdata.Longitude;
-	uint8_t lt_groundspeed = (uint8_t)round(pdata.Groundspeed); //rounded m/s .
+	int32_t lt_latitude = pdata.Latitude;
+	int32_t lt_longitude = pdata.Longitude;
+	uint8_t lt_groundspeed = (uint8_t)roundf(pdata.Groundspeed); //rounded m/s .
 	int32_t lt_altitude = 0;
 	if (BaroAltitudeHandle() != NULL) {
 		BaroAltitudeGet(&bdata);
-		lt_altitude = (int32_t)round(bdata.Altitude * 100); //Baro alt in cm.
+		lt_altitude = (int32_t)roundf(bdata.Altitude * 100); //Baro alt in cm.
 	}
 	else if (GPSPositionHandle() != NULL)
-		lt_altitude = (int32_t)round(pdata.Altitude * 100); //GPS alt in cm.
+		lt_altitude = (int32_t)roundf(pdata.Altitude * 100); //GPS alt in cm.
 	
 	uint8_t lt_gpsfix;
 	switch (pdata.Status) {
@@ -199,25 +199,25 @@ static void send_LTM_Gframe()
 	uint8_t LTBuff[LTM_GFRAME_SIZE];
 	//G Frame: $T(2 bytes)G(1byte)LAT(cm,4 bytes)LON(cm,4bytes)SPEED(m/s,1bytes)ALT(cm,4bytes)SATS(6bits)FIX(2bits)CRC(xor,1byte)
 	//START
-	LTBuff[0]=0x24; //$
-	LTBuff[1]=0x54; //T
+	LTBuff[0]  = 0x24; //$
+	LTBuff[1]  = 0x54; //T
 	//FRAMEID
-	LTBuff[2]=0x47; //G
+	LTBuff[2]  = 0x47; //G
 	//PAYLOAD
-	LTBuff[3]=(lt_latitude >> 8*0) & 0xFF;
-	LTBuff[4]=(lt_latitude >> 8*1) & 0xFF;
-	LTBuff[5]=(lt_latitude >> 8*2) & 0xFF;
-	LTBuff[6]=(lt_latitude >> 8*3) & 0xFF;
-	LTBuff[7]=(lt_longitude >> 8*0) & 0xFF;
-	LTBuff[8]=(lt_longitude >> 8*1) & 0xFF;
-	LTBuff[9]=(lt_longitude >> 8*2) & 0xFF;
-	LTBuff[10]=(lt_longitude >> 8*3) & 0xFF;	
-	LTBuff[11]=(lt_groundspeed >> 8*0) & 0xFF;
-	LTBuff[12]=(lt_altitude >> 8*0) & 0xFF;
-	LTBuff[13]=(lt_altitude >> 8*1) & 0xFF;
-	LTBuff[14]=(lt_altitude >> 8*2) & 0xFF;
-	LTBuff[15]=(lt_altitude >> 8*3) & 0xFF;
-	LTBuff[16]= ((lt_gpssats << 2)& 0xFF ) | (lt_gpsfix & 0b00000011) ; // last 6 bits: sats number, first 2:fix type (0,1,2,3)
+	LTBuff[3]  = (lt_latitude >> 8*0) & 0xFF;
+	LTBuff[4]  = (lt_latitude >> 8*1) & 0xFF;
+	LTBuff[5]  = (lt_latitude >> 8*2) & 0xFF;
+	LTBuff[6]  = (lt_latitude >> 8*3) & 0xFF;
+	LTBuff[7]  = (lt_longitude >> 8*0) & 0xFF;
+	LTBuff[8]  = (lt_longitude >> 8*1) & 0xFF;
+	LTBuff[9]  = (lt_longitude >> 8*2) & 0xFF;
+	LTBuff[10] = (lt_longitude >> 8*3) & 0xFF;	
+	LTBuff[11] = (lt_groundspeed >> 8*0) & 0xFF;
+	LTBuff[12] = (lt_altitude >> 8*0) & 0xFF;
+	LTBuff[13] = (lt_altitude >> 8*1) & 0xFF;
+	LTBuff[14] = (lt_altitude >> 8*2) & 0xFF;
+	LTBuff[15] = (lt_altitude >> 8*3) & 0xFF;
+	LTBuff[16] = ((lt_gpssats << 2)& 0xFF ) | (lt_gpsfix & 0b00000011) ; // last 6 bits: sats number, first 2:fix type (0,1,2,3)
 
 	send_LTM_Packet(LTBuff,LTM_GFRAME_SIZE);
 }
@@ -228,25 +228,25 @@ static void send_LTM_Aframe()
 	//prepare data
 	AttitudeActualData adata;
 	AttitudeActualGet(&adata);
-	int16_t lt_pitch = (int16_t)(round(adata.Pitch));	 //-180/180°
-	int16_t lt_roll = (int16_t)(round(adata.Roll));		//-180/180°
-	int16_t lt_heading = (int16_t)(round(adata.Yaw));  //-180/180°
+	int16_t lt_pitch   = (int16_t)(roundf(adata.Pitch));	//-180/180°
+	int16_t lt_roll    = (int16_t)(roundf(adata.Roll));		//-180/180°
+	int16_t lt_heading = (int16_t)(roundf(adata.Yaw));      //-180/180°
 	//pack A frame	
 	uint8_t LTBuff[LTM_AFRAME_SIZE];
 	
 	//A Frame: $T(2 bytes)A(1byte)PITCH(2 bytes)ROLL(2bytes)HEADING(2bytes)CRC(xor,1byte)
 	//START
-	LTBuff[0]=0x24; //$
-	LTBuff[1]=0x54; //T
+	LTBuff[0] = 0x24; //$
+	LTBuff[1] = 0x54; //T
 	//FRAMEID
-	LTBuff[2]=0x41; //A 
+	LTBuff[2] = 0x41; //A 
 	//PAYLOAD
-	LTBuff[3]=(lt_pitch >> 8*0) & 0xFF;
-	LTBuff[4]=(lt_pitch >> 8*1) & 0xFF;
-	LTBuff[5]=(lt_roll >> 8*0) & 0xFF;
-	LTBuff[6]=(lt_roll >> 8*1) & 0xFF;
-	LTBuff[7]=(lt_heading >> 8*0) & 0xFF;
-	LTBuff[8]=(lt_heading >> 8*1) & 0xFF;
+	LTBuff[3] = (lt_pitch >> 8*0) & 0xFF;
+	LTBuff[4] = (lt_pitch >> 8*1) & 0xFF;
+	LTBuff[5] = (lt_roll >> 8*0) & 0xFF;
+	LTBuff[6] = (lt_roll >> 8*1) & 0xFF;
+	LTBuff[7] = (lt_heading >> 8*0) & 0xFF;
+	LTBuff[8] = (lt_heading >> 8*1) & 0xFF;
 	send_LTM_Packet(LTBuff,LTM_AFRAME_SIZE);
 }
 
@@ -254,7 +254,7 @@ static void send_LTM_Aframe()
 static void send_LTM_Sframe() 
 {
 	//prepare data
-	uint16_t lt_vbat= 0;
+	uint16_t lt_vbat = 0;
 	uint16_t lt_amp = 0;
 	uint8_t	 lt_rssi = 0;
 	uint8_t	 lt_airspeed = 0;
@@ -266,27 +266,27 @@ static void send_LTM_Sframe()
 	if (FlightBatteryStateHandle() != NULL) {
 		FlightBatteryStateData sdata;
 		FlightBatteryStateGet(&sdata);
-		lt_vbat=(uint16_t)round(sdata.Voltage*1000);	  //Battery voltage in mv
-		lt_amp=(uint16_t)round(sdata.ConsumedEnergy);	  //mA consumed
+		lt_vbat = (uint16_t)roundf(sdata.Voltage*1000);	  //Battery voltage in mv
+		lt_amp = (uint16_t)roundf(sdata.ConsumedEnergy);	  //mA consumed
 	}
 	if (ManualControlCommandHandle() != NULL) {
 		ManualControlCommandData mdata;
 		ManualControlCommandGet(&mdata);
-		lt_rssi=(uint8_t)mdata.Rssi;					  //RSSI in %
+		lt_rssi = (uint8_t)mdata.Rssi;					  //RSSI in %
 	}
 	if (AirspeedActualHandle() != NULL) {
 		AirspeedActualData adata;
 		AirspeedActualGet (&adata);
-		lt_airspeed=(uint8_t)round(adata.TrueAirspeed);	  //Airspeed in m/s
+		lt_airspeed = (uint8_t)roundf(adata.TrueAirspeed);	  //Airspeed in m/s
 	}
 	FlightStatusData fdata;
 	FlightStatusGet(&fdata);
-	lt_arm=fdata.Armed;									  //Armed status
+	lt_arm = fdata.Armed;									  //Armed status
 
 	if (fdata.ControlSource == FLIGHTSTATUS_CONTROLSOURCE_FAILSAFE)
-		lt_failsafe=1;
+		lt_failsafe = 1;
 	else
-		lt_failsafe=0;
+		lt_failsafe = 0;
 	
 	// Flight mode(0-19): 0: Manual, 1: Rate, 2: Attitude/Angle, 3: Horizon, 4: Acro, 5: Stabilized1, 6: Stabilized2, 7: Stabilized3,
 	// 8: Altitude Hold, 9: Loiter/GPS Hold, 10: Auto/Waypoints, 11: Heading Hold / headFree, 
@@ -317,18 +317,18 @@ static void send_LTM_Sframe()
 	
 	//A Frame: $T(2 bytes)A(1byte)PITCH(2 bytes)ROLL(2bytes)HEADING(2bytes)CRC(xor,1byte)
 	//START
-	LTBuff[0]=0x24; //$
-	LTBuff[1]=0x54; //T
+	LTBuff[0] = 0x24; //$
+	LTBuff[1] = 0x54; //T
 	//FRAMEID
-	LTBuff[2]=0x53; //S 
+	LTBuff[2] = 0x53; //S 
 	//PAYLOAD
-	LTBuff[3]=(lt_vbat >> 8*0) & 0xFF;
-	LTBuff[4]=(lt_vbat >> 8*1) & 0xFF;
-	LTBuff[5]=(lt_amp >> 8*0) & 0xFF;
-	LTBuff[6]=(lt_amp >> 8*1) & 0xFF;
-	LTBuff[7]=(lt_rssi >> 8*0) & 0xFF;
-	LTBuff[8]=(lt_airspeed >> 8*0) & 0xFF;
-	LTBuff[9]= ((lt_flightmode << 2)& 0xFF ) | ((lt_failsafe << 1)& 0b00000010 ) | (lt_arm & 0b00000001) ; // last 6 bits: flight mode, 2nd bit: failsafe, 1st bit: Arm status.
+	LTBuff[3] = (lt_vbat >> 8*0) & 0xFF;
+	LTBuff[4] = (lt_vbat >> 8*1) & 0xFF;
+	LTBuff[5] = (lt_amp >> 8*0) & 0xFF;
+	LTBuff[6] = (lt_amp >> 8*1) & 0xFF;
+	LTBuff[7] = (lt_rssi >> 8*0) & 0xFF;
+	LTBuff[8] = (lt_airspeed >> 8*0) & 0xFF;
+	LTBuff[9] = ((lt_flightmode << 2)& 0xFF ) | ((lt_failsafe << 1)& 0b00000010 ) | (lt_arm & 0b00000001) ; // last 6 bits: flight mode, 2nd bit: failsafe, 1st bit: Arm status.
 	send_LTM_Packet(LTBuff,LTM_SFRAME_SIZE);
 }
 
@@ -339,7 +339,7 @@ static void send_LTM_Packet(uint8_t *LTPacket, uint8_t LTPacket_size)
 	for (int i = 3; i < LTPacket_size-1; i++) {
 		LTCrc ^= LTPacket[i];
 	}
-	LTPacket[LTPacket_size-1]=LTCrc;
+	LTPacket[LTPacket_size-1] = LTCrc;
 	if (lighttelemetryPort) {
 		PIOS_COM_SendBuffer(lighttelemetryPort, LTPacket, LTPacket_size);
 	}

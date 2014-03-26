@@ -329,8 +329,8 @@ ConfigModuleWidget::ConfigModuleWidget(QWidget *parent) : ConfigTaskWidget(paren
     ui->cbUAVOFrskyBridge->setProperty(trueString.toLatin1(), "Enabled");
     ui->cbUAVOFrskyBridge->setProperty(falseString.toLatin1(), "Disabled");
     
-    ui->cbUAVOLighttelemetryBridge->setProperty(trueString.toAscii(), "Enabled");
-    ui->cbUAVOLighttelemetryBridge->setProperty(falseString.toAscii(), "Disabled");	
+    ui->cbUAVOLighttelemetryBridge->setProperty(trueString.toLatin1(), "Enabled");
+    ui->cbUAVOLighttelemetryBridge->setProperty(falseString.toLatin1(), "Disabled");	
 
     ui->gb_measureVoltage->setProperty(trueString.toLatin1(), "Enabled");
     ui->gb_measureVoltage->setProperty(falseString.toLatin1(), "Disabled");

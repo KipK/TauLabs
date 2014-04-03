@@ -79,11 +79,12 @@
 #define PIOS_INCLUDE_GPS
 #define PIOS_INCLUDE_GPS_NMEA_PARSER
 #define PIOS_INCLUDE_GPS_UBX_PARSER
-#define PIOS_GPS_SETS_HOMELOCATION
 #define PIOS_INCLUDE_MAVLINK
 #define PIOS_INCLUDE_HOTT
 #define PIOS_INCLUDE_FRSKY_SENSOR_HUB
+#define PIOS_INCLUDE_SESSION_MANAGEMENT
 #define PIOS_INCLUDE_LIGHTTELEMETRY
+#define PIOS_INCLUDE_PICOC
 
 /* Supported receiver interfaces */
 #define PIOS_INCLUDE_RCVR
@@ -107,7 +108,6 @@
 /* Flags that alter behaviors - mostly to lower resources for CC */
 #define PIOS_INCLUDE_INITCALL           /* Include init call structures */
 #define PIOS_TELEM_PRIORITY_QUEUE       /* Enable a priority queue in telemetry */
-#define PIOS_GPS_SETS_HOMELOCATION      /* GPS options */
 
 #define CAMERASTAB_POI_MODE
 

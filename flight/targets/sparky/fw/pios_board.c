@@ -782,7 +782,7 @@ void PIOS_Board_Init(void) {
 #if defined(PIOS_INCLUDE_PPM)
 		{
 			uintptr_t pios_ppm_id;
-			PIOS_PPM_Init(&pios_ppm_id, &pios_ppm_cfg);
+			PIOS_PPM_Init(&pios_ppm_id, &pios_ppm_cfg[0]);
 
 			uintptr_t pios_ppm_rcvr_id;
 			if (PIOS_RCVR_Init(&pios_ppm_rcvr_id, &pios_ppm_rcvr_driver, pios_ppm_id)) {
@@ -875,32 +875,44 @@ void PIOS_Board_Init(void) {
 	uint8_t number_of_pwm_outputs;
 	uint8_t number_of_adc_ports;
 	bool use_pwm_in;
+	bool use_ppm_in;
 	HwSparkyOutPortGet(&hw_outport);
 	switch (hw_outport) {
 	case HWSPARKY_OUTPORT_PWM10:
 		number_of_pwm_outputs = 10;
 		number_of_adc_ports = 0;
 		use_pwm_in = false;
+		use_ppm_in = false;
 		break;
 	case HWSPARKY_OUTPORT_PWM82ADC:
 		number_of_pwm_outputs = 8;
 		number_of_adc_ports = 2;
 		use_pwm_in = false;
+		use_ppm_in = false;
 		break;
 	case HWSPARKY_OUTPORT_PWM73ADC:
 		number_of_pwm_outputs = 7;
 		number_of_adc_ports = 3;
 		use_pwm_in = false;
+		use_ppm_in = false;
 		break;
 	case HWSPARKY_OUTPORT_PWM9PWM_IN:
 		number_of_pwm_outputs = 9;
 		use_pwm_in = true;
 		number_of_adc_ports = 0;
+		use_ppm_in = false;
 		break;
 	case HWSPARKY_OUTPORT_PWM7PWM_IN2ADC:
 		number_of_pwm_outputs = 7;
 		use_pwm_in = true;
 		number_of_adc_ports = 2;
+		use_ppm_in = false;
+		break;
+		case HWSPARKY_OUTPORT_PWM7PPM2ADC:
+		number_of_pwm_outputs = 7;
+		number_of_adc_ports = 2;
+		use_pwm_in = false;
+		use_ppm_in = true;
 		break;
 	default:
 		PIOS_Assert(0);
@@ -938,6 +950,20 @@ void PIOS_Board_Init(void) {
 		pios_rcvr_group_map[MANUALCONTROLSETTINGS_CHANNELGROUPS_PWM] = pios_pwm_rcvr_id;
 	}
 #endif	/* PIOS_INCLUDE_PWM */
+#if defined(PIOS_INCLUDE_PPM)
+	if (hw_rcvrport != HWSPARKY_RCVRPORT_PPM) { 
+		if (use_ppm_in > 0) {
+				uintptr_t pios_ppm_id;
+				// Use chan 8 as alternative PPM input
+				PIOS_PPM_Init(&pios_ppm_id, &pios_ppm_cfg[1]); 
+				uintptr_t pios_ppm_rcvr_id;
+				if (PIOS_RCVR_Init(&pios_ppm_rcvr_id, &pios_ppm_rcvr_driver, pios_ppm_id)) {
+					PIOS_Assert(0);
+				}
+				pios_rcvr_group_map[MANUALCONTROLSETTINGS_CHANNELGROUPS_PPM] = pios_ppm_rcvr_id;
+		}
+	}
+#endif	/* PIOS_INCLUDE_PPM */
 	PIOS_WDG_Clear();
 	PIOS_DELAY_WaitmS(200);
 	PIOS_WDG_Clear();

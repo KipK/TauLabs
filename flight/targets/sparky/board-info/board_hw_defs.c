@@ -1299,17 +1299,31 @@ static struct pios_pwm_cfg pios_pwm_cfg = {
  */
 #if defined(PIOS_INCLUDE_PPM)
 #include <pios_ppm_priv.h>
-static const struct pios_ppm_cfg pios_ppm_cfg = {
-	.tim_ic_init = {
-		.TIM_ICPolarity = TIM_ICPolarity_Rising,
-		.TIM_ICSelection = TIM_ICSelection_DirectTI,
-		.TIM_ICPrescaler = TIM_ICPSC_DIV1,
-		.TIM_ICFilter = 0x0,
-		.TIM_Channel = TIM_Channel_4,
+static const struct pios_ppm_cfg pios_ppm_cfg[] = {
+	{
+		.tim_ic_init = {
+			.TIM_ICPolarity = TIM_ICPolarity_Rising,
+			.TIM_ICSelection = TIM_ICSelection_DirectTI,
+			.TIM_ICPrescaler = TIM_ICPSC_DIV1,
+			.TIM_ICFilter = 0x0,
+			.TIM_Channel = TIM_Channel_4,
+		},
+		/* Use only the first channel for ppm */
+		.channels = pios_tim_rcvrport_ppm,
+		.num_channels = 1,
 	},
-	/* Use only the first channel for ppm */
-	.channels = pios_tim_rcvrport_ppm,
-	.num_channels = 1,
+	{
+		.tim_ic_init = {
+			.TIM_ICPolarity = TIM_ICPolarity_Rising,
+			.TIM_ICSelection = TIM_ICSelection_DirectTI,
+			.TIM_ICPrescaler = TIM_ICPSC_DIV1,
+			.TIM_ICFilter = 0x0,
+			.TIM_Channel = TIM_Channel_1,
+		},
+		/* Use only channel8 for alternative ppm input */
+		.channels = &pios_tim_rcvrport_pwm[1], 
+		.num_channels = 1,
+	}
 };
 
 #endif //PPM
